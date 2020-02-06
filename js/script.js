@@ -6,32 +6,12 @@ FSJS project 2 - List Filter and Pagination
 // Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
 
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
 const studentList = document.querySelector(".student-list").getElementsByTagName("li");
 const pageItems = 10;
-console.log(studentList);
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
 
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
+/*** 
+   the showPage function determines which list items will be shown on the page
+   based on total number of items per page and the current page number
 ***/
 function showPage(list, page)
 {
@@ -53,8 +33,7 @@ function showPage(list, page)
 
 
 /*** 
-   Create the `appendPageLinks function` to generate, append, and add 
-   functionality to the pagination buttons.
+   appendPageLinks adds pagination links to the document
 ***/
 function appendPageLinks(list)
 {
@@ -64,7 +43,7 @@ function appendPageLinks(list)
    let numLi = Math.floor(list.length / pageItems);
    if((list.length / pageItems) % pageItems != 0 || list.length <= 10)
       numLi++;
-   console.log(`create ${numLi} list items`)
+   
    div.className = "pagination";
    div.appendChild(ul);
 
@@ -84,7 +63,6 @@ function appendPageLinks(list)
    for(let i = 0; i < links.length; i++)
    {
       links[i].addEventListener("click", (event) => {
-         console.log(`you clicked on link ${links[i].textContent}`)
 
          //remove active class from all links
          for(let j = 0; j < links.length; j++)
@@ -107,6 +85,10 @@ function appendPageLinks(list)
    page.appendChild(div);
 }
 
+/** 
+ *  appendSearchBar adds an input element and submit
+ * button that allow the user to search for a given name
+*/
 function appendSearchBar()
 {
    const pageHeader = document.getElementsByTagName("div")[1];
@@ -126,19 +108,38 @@ function appendSearchBar()
       search(input, studentList);
    });
 
+   //input field event listener
+   input.addEventListener("keyup", () => {
+      search(input, studentList);
+   });
+
    pageHeader.appendChild(studentSearch);
 }
 
+//the search fucntion searches through the list of names
+//for a given name and modifies the display based on
+//results of the search. if the search is empty
+//shows the original list
 function search(searchInput, names)
 {
   let count = 0;
   const page = document.querySelector(".page");
   
+  //remove no match message if it exists
   if(page.querySelector(".no-match") != null)
   {
       page.removeChild(page.querySelector(".no-match"));
   }
 
+  //handle empty searchInput
+  if(searchInput.value.length == 0)
+  {
+   showPage(studentList, 1);
+   appendPageLinks(studentList);
+   return;
+  }
+
+  //find matches and hide non matches
   for(let i = 0; i < names.length; i++)
   {
       let currentName = names[i].querySelector("h3").textContent; 
@@ -160,10 +161,9 @@ function search(searchInput, names)
       }
   }
 
+  //message for no matches found
   if(count == 0)
-  {
-      //no results fount
-      
+  {   
       const message = document.createElement("p");
 
       message.innerHTML = "No matches were found";
@@ -176,8 +176,9 @@ function search(searchInput, names)
   showPage(matches, 1);
   appendPageLinks(matches);
   
-  console.log(`${count} names matched the query ${searchInput.value}`);
+  console.log(`${count} names matched the query "${searchInput.value}"`);
 }
+
 
 // Remember to delete the comments that came with this file, and replace them with your own code comments.
 showPage(studentList, 1);
