@@ -84,12 +84,12 @@ function appendPageLinks(list)
    for(let i = 0; i < links.length; i++)
    {
       links[i].addEventListener("click", (event) => {
-         //console.log(`you clicked on link ${links[i].textContent}`)
+         console.log(`you clicked on link ${links[i].textContent}`)
 
          //remove active class from all links
-         for(let j = 0; i < links.length; j++)
+         for(let j = 0; j < links.length; j++)
          {
-            links[i].className = "";
+            links[j].classList.remove("active");
          }
          //add active class to clicked link
          event.target.className = "active";
@@ -105,4 +105,5 @@ function appendPageLinks(list)
 
 
 // Remember to delete the comments that came with this file, and replace them with your own code comments.
+showPage(studentList, 1);
 appendPageLinks(studentList);
