@@ -101,9 +101,27 @@ function appendPageLinks(list)
    page.appendChild(div);
 }
 
+function appendSearchBar()
+{
+   const pageHeader = document.getElementsByTagName("div")[1];
+   const studentSearch = document.createElement("div");
 
+   studentSearch.className = "student-search";
+   studentSearch.innerHTML = `
+      <input placeholder="Search for students...">
+      <button>Search</button>
+   `;
+   const button = studentSearch.lastElementChild;
+
+   button.addEventListener("click", (event) => {
+      console.log("you clicked a button!");
+   });
+
+   pageHeader.appendChild(studentSearch);
+}
 
 
 // Remember to delete the comments that came with this file, and replace them with your own code comments.
 showPage(studentList, 1);
 appendPageLinks(studentList);
+appendSearchBar();
