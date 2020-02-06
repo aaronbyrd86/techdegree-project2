@@ -18,7 +18,7 @@ FSJS project 2 - List Filter and Pagination
 ***/
 const studentList = document.querySelector(".student-list").getElementsByTagName("li");
 const pageItems = 10;
-
+console.log(studentList);
 /*** 
    Create the `showPage` function to hide all of the items in the 
    list except for the ten you want to show.
@@ -37,7 +37,7 @@ function showPage(list, page)
 {
    let startIndex = (page * pageItems) - pageItems;
    let endIndex = page * pageItems;
-   console.log(`showPage() called with a page value of ${page}`);
+
    for(let i = 0; i < list.length; i++)
    {
       if(i >= startIndex && i < endIndex)
@@ -62,9 +62,9 @@ function appendPageLinks(list)
    const div = document.createElement('div');
    const ul = document.createElement("ul");
    let numLi = Math.floor(list.length / pageItems);
-   if((list.length / pageItems) % pageItems != 0)
+   if((list.length / pageItems) % pageItems != 0 || list.length <= 10)
       numLi++;
-   //console.log(`create ${numLi} list items`)
+   console.log(`create ${numLi} list items`)
    div.className = "pagination";
    div.appendChild(ul);
 
@@ -94,8 +94,14 @@ function appendPageLinks(list)
          //add active class to clicked link
          event.target.className = "active";
          //call showPage()
-         showPage(studentList, links[i].textContent);
+         showPage(list, links[i].textContent);
       })
+   }
+
+   //if pagination links already exist remove them from the DOM
+   if(page.querySelector(".pagination") != null)
+   {
+      page.removeChild(page.querySelector(".pagination"));
    }
 
    page.appendChild(div);
@@ -112,16 +118,70 @@ function appendSearchBar()
       <button>Search</button>
    `;
    const button = studentSearch.lastElementChild;
+   const input = studentSearch.firstElementChild;
 
+   //submit button event listener
    button.addEventListener("click", (event) => {
-      console.log("you clicked a button!");
+      event.preventDefault();
+      search(input, studentList);
    });
 
    pageHeader.appendChild(studentSearch);
 }
 
+function search(searchInput, names)
+{
+  let count = 0;
+  const page = document.querySelector(".page");
+  
+  if(page.querySelector(".no-match") != null)
+  {
+      page.removeChild(page.querySelector(".no-match"));
+  }
+
+  for(let i = 0; i < names.length; i++)
+  {
+      let currentName = names[i].querySelector("h3").textContent; 
+      names[i].classList.remove("match"); 
+      
+      if(searchInput.value.length != 0 && currentName.toLowerCase().includes(searchInput.value.toLowerCase()))
+      {
+         names[i].classList.add("match");
+         count++;
+      }
+
+      if(names[i].classList.contains("match"))
+      {
+         names[i].style.display = "block";
+      }
+      else
+      {
+         names[i].style.display = "none";
+      }
+  }
+
+  if(count == 0)
+  {
+      //no results fount
+      
+      const message = document.createElement("p");
+
+      message.innerHTML = "No matches were found";
+      message.className = "no-match";
+      page.appendChild(message);
+  }
+  
+  const matches = document.querySelectorAll(".match");
+  
+  showPage(matches, 1);
+  appendPageLinks(matches);
+  
+  console.log(`${count} names matched the query ${searchInput.value}`);
+}
 
 // Remember to delete the comments that came with this file, and replace them with your own code comments.
 showPage(studentList, 1);
 appendPageLinks(studentList);
 appendSearchBar();
+
+
