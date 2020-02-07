@@ -30,7 +30,27 @@ function showPage(list, page)
    }
 }
 
+/**
+ * 
+ * @param {*} length 
+ */
+function getPageLinks(length)
+{
+   let numLinks;
 
+   if(length == pageItems)
+   {
+      numLinks = 1;
+      return numLinks;
+   }
+
+   numLinks = Math.floor(length / pageItems);
+   
+   if((length / pageItems) % pageItems != 0 || length <= 10)
+      numLinks++;
+
+   return numLinks   
+}
 
 /*** 
    appendPageLinks adds pagination links to the document
@@ -40,9 +60,7 @@ function appendPageLinks(list)
    const page = document.querySelector(".page");
    const div = document.createElement('div');
    const ul = document.createElement("ul");
-   let numLi = Math.floor(list.length / pageItems);
-   if((list.length / pageItems) % pageItems != 0 || list.length <= 10)
-      numLi++;
+   let numLi = getPageLinks(list.length);
    
    div.className = "pagination";
    div.appendChild(ul);
